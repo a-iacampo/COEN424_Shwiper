@@ -1,5 +1,7 @@
 package com.example.shwiper;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -53,7 +58,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
         void setData(ItemModel data) {
             Picasso.get()
-                    .load(data.getImage())
+                    .load("https://i.ebayimg.com/00/s/ODAwWDYwMA==/z/0FYAAOSwB65fst9t/$_57.JPG")
                     .fit()
                     .centerCrop()
                     .into(image);
@@ -72,4 +77,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     public void setItems(List<ItemModel> items) {
         this.items = items;
     }
+
+
 }

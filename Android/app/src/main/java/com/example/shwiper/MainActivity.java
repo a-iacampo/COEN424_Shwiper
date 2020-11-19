@@ -1,11 +1,16 @@
 package com.example.shwiper;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DiffUtil;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -15,6 +20,7 @@ import com.example.shwiper.CardStackAdapter;
 import com.example.shwiper.CardStackCallback;
 import com.example.shwiper.ItemModel;
 import com.example.shwiper.R;
+import com.google.android.material.navigation.NavigationView;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
@@ -25,16 +31,27 @@ import com.yuyakaido.android.cardstackview.SwipeableMethod;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private static final String TAG = "MainActivity";
     private CardStackLayoutManager manager;
     private CardStackAdapter adapter;
 
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initViews();
+        setSupportActionBar(toolbar);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,R.string.drawer_open, R.string.drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
         CardStackView cardStackView = findViewById(R.id.card_stack_view);
         manager = new CardStackLayoutManager(this, new CardStackListener() {
@@ -99,6 +116,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void initViews() {
+        Log.d(TAG, "initViews:started");
+        drawer = findViewById(R.id.drawer);
+        navigationView = findViewById(R.id.navigation_drawer);
+        toolbar = findViewById(R.id.toolbar);
+
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
     private void paginate() {
         List<ItemModel> old = adapter.getItems();
         List<ItemModel> baru = new ArrayList<>(addList());
@@ -122,5 +148,19 @@ public class MainActivity extends AppCompatActivity {
         items.add(new ItemModel(R.drawable.sample4, "Markobar", "19", "Bandung"));
         items.add(new ItemModel(R.drawable.sample5, "Marmut", "25", "Hutan"));*/
         return items;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.item1:
+                Toast.makeText(MainActivity.this, "item1 selected", Toast.LENGTH_SHORT).show();
+            case R.id.item2:
+                Toast.makeText(MainActivity.this, "item2 selected", Toast.LENGTH_SHORT).show();
+            case R.id.item3:
+                Toast.makeText(MainActivity.this, "item3 selected", Toast.LENGTH_SHORT).show();
+        }
+        return true;
     }
 }

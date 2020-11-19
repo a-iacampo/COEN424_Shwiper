@@ -13,15 +13,15 @@
 
     <ImageView
         android:id="@+id/item_image"
-        android:layout_width="match_parent"
-        android:layout_height="721dp"
+        android:layout_width="411dp"
+        android:layout_height="607dp"
         android:scaleType="centerCrop" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@drawable/gradation_black"
+        android:background="@android:color/holo_purple"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -29,15 +29,15 @@
             android:id="@+id/item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="26sp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/item_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -45,24 +45,24 @@
             android:id="@+id/item_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/item_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/left_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="721dp"
+        android:layout_width="411dp"
+        android:layout_height="583dp"
         android:background="@drawable/overlay_black">
 
         <ImageView
@@ -75,15 +75,15 @@
 
     <FrameLayout
         android:id="@+id/right_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="411dp"
+        android:layout_height="605dp"
         android:background="@drawable/overlay_black">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_arrow_back_24"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:src="@drawable/ic_baseline_arrow_back_24" />
 
     </FrameLayout>
 
