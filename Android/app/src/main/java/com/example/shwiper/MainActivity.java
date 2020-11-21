@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DiffUtil;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -155,11 +156,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId())
         {
             case R.id.item1:
-                Toast.makeText(MainActivity.this, "item1 selected", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, profileActivity.class);
+                startActivity(intent);
+                return true;
             case R.id.item2:
                 Toast.makeText(MainActivity.this, "item2 selected", Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.item3:
                 Toast.makeText(MainActivity.this, "item3 selected", Toast.LENGTH_SHORT).show();
+                return true;
         }
         return true;
     }
