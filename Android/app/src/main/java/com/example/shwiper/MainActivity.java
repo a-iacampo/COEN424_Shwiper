@@ -160,7 +160,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
                 return true;
             case R.id.item2:
-                Toast.makeText(MainActivity.this, "item2 selected", Toast.LENGTH_SHORT).show();
+                Intent intent2 = new Intent(MainActivity.this, adsLikedActivity.class);
+                startActivity(intent2);
                 return true;
             case R.id.item3:
                 Toast.makeText(MainActivity.this, "item3 selected", Toast.LENGTH_SHORT).show();
