@@ -38,12 +38,18 @@ public class MainActivity extends AppCompatActivity {
 
     protected static final String TAG = "FirebaseHelper";
     protected FirebaseFunctions mFunctions;
+    protected FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toast.makeText(MainActivity.this, "Connected to Firebase!", Toast.LENGTH_SHORT).show();
+
+        fAuth = FirebaseAuth.getInstance();
+        fAuth.signInWithEmailAndPassword("test@email.com", "123456");
+
+        //fAuth.signOut();
 
         mFunctions = FirebaseFunctions.getInstance();
         load();

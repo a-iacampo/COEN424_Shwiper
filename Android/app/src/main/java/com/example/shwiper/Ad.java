@@ -3,14 +3,12 @@ package com.example.shwiper;
 public class Ad {
     private String url;
     private String title;
-    private String description;
 
     public Ad() {}
 
-    public Ad(String url, String title, String description) {
+    public Ad(String url, String title) {
         this.url = url;
         this.title = title;
-        this.description = description;
     }
 
     public String getUrl() {
@@ -27,13 +25,5 @@ public class Ad {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }

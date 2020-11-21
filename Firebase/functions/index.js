@@ -10,61 +10,46 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// // http request 1
-// exports.FetchFromScraper = functions.https.onRequest((req, res) => {
-//     var adsList = [];
+// http request 3
+exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
+            'while authenticated.');
+    }
 
-//     const options = {
-//         //Number of ads it fetches
-//         minResults: 20, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
-//     };
+    const list = [];
 
-//     const params = {
-//         locationId: kijiji.locations.QUEBEC.GREATER_MONTREAL,
-//         categoryId: kijiji.categories.BUY_AND_SELL.CLOTHING,
-//         sortType: "DATE_DESCENDING",
-//         distance: 50 //Distance in Km //Not sure how it knows current location
-//         //sortByName: "priceAsc"
-//     };
+    const options = {
+        //Number of ads it fetches
+        minResults: 1, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
+    };
 
-//     kijiji.search(params, options).then((ads) => {
-//         ads.forEach((ad) => {
-//             adsList.push(ad);
-//         })
-//         res.json(adsList);
+    const params = {
+        locationId: kijiji.locations.QUEBEC.GREATER_MONTREAL,
+        categoryId: kijiji.categories.BUY_AND_SELL.CLOTHING
+    };
 
-//     }).catch((error => {
-//         console.log(error);
-//     }));
-// });
+    let ads = await kijiji.search(params, options).then((ads) => {
+        ads.forEach((ad) => {
+            //TODO
+            //Filter and clean title or description extra quotes
+            list.push(`{
+                url: "${ad.url}",
+                title: "${ad.title}"
+            }`);
+        });
 
-// // http request 2
-// exports.ReloadFromScraper = functions.https.onRequest((req, res) => {
-//     var adsList = [];
+        const result = "[" + list + "]";
+        functions.logger.log(result);
+        return result;
 
-//     const options = {
-//         //Number of ads it fetches
-//         minResults: 20, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
-//     };
+    }).catch((error => {
+        functions.logger.log(error);
+    }));
 
-//     const params = {
-//         locationId: kijiji.locations.QUEBEC.GREATER_MONTREAL,
-//         categoryId: kijiji.categories.BUY_AND_SELL.CLOTHING,
-//         sortType: "DATE_DESCENDING",
-//         distance: 50 //Distance in Km //Not sure how it knows current location
-//         //sortByName: "priceAsc"
-//     };
-
-//     kijiji.search(params, options).then((ads) => {
-//         ads.forEach((ad) => {
-//             adsList.push(ad);
-//         })
-//         res.json(adsList);
-
-//     }).catch((error => {
-//         console.log(error);
-//     }));
-// });
+    return ads;
+});
 
 // // http request 3
 // exports.StoreLikedAds = functions.https.onRequest((req, res) => {
@@ -79,83 +64,5 @@ const db = admin.firestore();
 //     db.collection("LikedAds").add(likedAd);
 //     res.send("Ad successfully Saved!");
 // });
-
-// http request 3
-exports.test = functions.https.onCall((data, context) => {
-    const list = []
-    const url = "https://www.kijiji.ca/v-clothing-lot/canada/wholesale-custom-hoodies-minimum-24/cas_364834";
-    const title = "New Post!";
-    const title2 = "Post 2";
-
-    list.push(`{
-        url: "${url}",
-        title: "${title}"
-    }\n`);
-
-    list.push(`{
-        url: "${url}",
-        title: "${title2}"
-    }`);
-
-    const result = "[" + list + "]";
-
-    return result;
-});
-
-// http request 3
-exports.FetchFromScraper = functions.https.onCall((data, context) => {
-    const list = [];
-
-    const options = {
-        //Number of ads it fetches
-        minResults: 1, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
-    };
-
-    const params = {
-        locationId: kijiji.locations.QUEBEC.GREATER_MONTREAL,
-        categoryId: kijiji.categories.BUY_AND_SELL.CLOTHING
-    };
-
-    // kijiji.search(params, options, (error, ads) => {
-    //     if(!error) {
-    //         ads.forEach((ad) => {
-    //             list.push(`{
-    //                 url: "${ad.url}",
-    //                 title: "${ad.title}"
-    //             }`);
-    //         });
-
-    //         const result = "[" + list + "]";
-    //         functions.logger.log(result);
-    //         return result;
-
-    //     } else {
-    //         functions.logger.log(error);
-    //         return;
-    //     }
-    // });
-
-    // const result = "[" + list + "]";
-    // functions.logger.log(result);
-    // return result;
-
-    //let ads = await kijiji.search....
-
-    return kijiji.search(params, options).then((ads) => {
-        ads.forEach((ad) => {
-            list.push(`{
-                url: "${ad.url}",
-                title: "${ad.title}"
-            }`);
-        });
-
-        const result = "[" + list + "]";
-        functions.logger.log(result);
-        return result;
-
-    }).catch((error => {
-        functions.logger.log(error);
-    }));
-});
 
 //Run with Firebase serve
