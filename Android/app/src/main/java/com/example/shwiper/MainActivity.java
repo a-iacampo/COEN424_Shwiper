@@ -42,12 +42,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private Toolbar toolbar;
 
+    protected FirebaseHelper firebaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
-    
+
+        firebaseHelper = new FirebaseHelper();
 
         initViews();
         setSupportActionBar(toolbar);
@@ -140,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private List<ItemModel> addList() {
         List<ItemModel> items = new ArrayList<>();
         items.add(new ItemModel(R.drawable.sample1, "Title", "250.55", "Montreal", "Test of description"));
+
+        //firebaseHelper.FectchFromScraper(); //Call cloud function
 /*        items.add(new ItemModel(R.drawable.sample2, "Marpuah", "20", "Malang"));
         items.add(new ItemModel(R.drawable.sample3, "Sukijah", "27", "Jonggol"));
         items.add(new ItemModel(R.drawable.sample4, "Markobar", "19", "Bandung"));
