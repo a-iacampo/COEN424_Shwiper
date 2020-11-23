@@ -1,13 +1,13 @@
 package com.example.shwiper;
 
 public class ItemModel {
-    private int image;
+    private String image;
     private String title, description, location, price;
 
     public ItemModel() {
     }
 
-    public ItemModel(int image, String title, String price, String location, String description) {
+    public ItemModel(String image, String title, String price, String location, String description) {
         this.image = image;
         this.title = title;
         this.description = description;
@@ -15,7 +15,7 @@ public class ItemModel {
         this.price = price;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 

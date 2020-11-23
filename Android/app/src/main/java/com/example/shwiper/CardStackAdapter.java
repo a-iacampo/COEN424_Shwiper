@@ -58,7 +58,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
         void setData(ItemModel data) {
             Picasso.get()
-                    .load("https://i.ebayimg.com/00/s/ODAwWDYwMA==/z/0FYAAOSwB65fst9t/$_57.JPG")
+                    .load(data.getImage())
                     .fit()
                     .centerCrop()
                     .into(image);

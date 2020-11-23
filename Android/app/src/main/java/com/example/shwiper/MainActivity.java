@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private List<ItemModel> addList() {
         List<ItemModel> items = new ArrayList<>();
-        items.add(new ItemModel(R.drawable.sample1, "Title", "250.55", "Montreal", "Test of description"));
+        items.add(new ItemModel("https://i.ebayimg.com/00/s/ODAwWDYwMA==/z/0FYAAOSwB65fst9t/$_57.JPG", "Title", "250.55", "Montreal", "Test of description"));
 
         //firebaseHelper.FectchFromScraper(); //Call cloud function
 /*        items.add(new ItemModel(R.drawable.sample2, "Marpuah", "20", "Malang"));

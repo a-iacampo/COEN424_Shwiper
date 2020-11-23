@@ -14,11 +14,14 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.firebase.functions.HttpsCallableResult;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
 public class FirebaseHelper {
+    protected List<Ad> ads = new ArrayList<>();
+
     protected static final String TAG = "FirebaseHelper";
     protected FirebaseFunctions mFunctions;
     protected FirebaseAuth fAuth;
@@ -29,7 +32,7 @@ public class FirebaseHelper {
         mFunctions = FirebaseFunctions.getInstance();
     }
 
-    private Task<String> onCallTest() {
+    private Task<String> onCallFetchFromScraper() {
         Log.d(TAG, "Call");
         return mFunctions.getHttpsCallable("FetchFromScraper").call().continueWith(new Continuation<HttpsCallableResult, String>() {
             @Override
@@ -48,7 +51,7 @@ public class FirebaseHelper {
         Log.d(TAG, "Start call");
 
         // [START call_add_message]
-        onCallTest().addOnCompleteListener(new OnCompleteListener<String>() {
+        onCallFetchFromScraper().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
             public void onComplete(@NonNull Task<String> task) {
                 if (!task.isSuccessful()) {
@@ -61,22 +64,22 @@ public class FirebaseHelper {
                     Log.d(TAG, "ERROR: " + e);
                     return;
                 }
-
                 // [START_EXCLUDE]
                 try {
                     String result = task.getResult();
-
                     ObjectMapper mapper = new ObjectMapper();
                     mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
                     mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-                    List<Ad> ppl2 = Arrays.asList(mapper.readValue(result, Ad[].class));
-                    for (int i = 0; i < ppl2.size(); i++) {
-                        Log.d(TAG, "Map " + ppl2.get(i).getTitle());
-                    }
-
+                    ads = Arrays.asList(mapper.readValue(result, Ad[].class));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                List<ItemModel> items = new ArrayList<>();
+                for (int i = 0; i < ads.size(); i++) {
+                    items.add(new ItemModel(ads.get(i).getImage(), ads.get(i).getTitle(), ads.get(i).getPrice(), ads.get(i).getLocation(), ads.get(i).getDescription()));
+                }
+
                 // [END_EXCLUDE]
             }
         });

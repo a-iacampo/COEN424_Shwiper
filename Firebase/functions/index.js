@@ -10,19 +10,18 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// http request 3
+// http request 1
 exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         // Throwing an HttpsError so that the client gets the error details.
-        throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
-            'while authenticated.');
+        throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
     }
 
     const list = [];
 
     const options = {
         //Number of ads it fetches
-        minResults: 1, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
+        minResults: 20, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
     };
 
     const params = {
@@ -34,24 +33,30 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
         ads.forEach((ad) => {
             //TODO
             //Filter and clean title or description extra quotes
+            var title = ad.title.replace(/['"]+/g, '');
+            var description = ad.description.replace(/['"]+/g, '');
             list.push(`{
-                url: "${ad.url}",
-                title: "${ad.title}"
+                title: "${title}",
+                description: "${description}",
+                image: "${ad.image}",
+                price: "${ad.attributes.price}",
+                location: "${ad.attributes.location}",
+                url: "${ad.url}"
             }`);
         });
 
         const result = "[" + list + "]";
-        functions.logger.log(result);
         return result;
 
     }).catch((error => {
         functions.logger.log(error);
+        return error;
     }));
 
     return ads;
 });
 
-// // http request 3
+// // http request 2
 // exports.StoreLikedAds = functions.https.onRequest((req, res) => {
 //     const url = "https://www.kijiji.ca/v-clothing-lot/canada/wholesale-custom-hoodies-minimum-24/cas_364834";
 //     const userId = "SJM8DSFN4923MDS"
