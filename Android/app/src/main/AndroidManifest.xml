@@ -10,16 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Shwiper">
         <activity android:name=".SignupActivity"/>
-        <activity android:name=".loginActivity" />
-        <activity android:name=".adsLikedActivity" />
-        <activity android:name=".profileActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".adsLikedActivity" />
+        <activity android:name=".profileActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

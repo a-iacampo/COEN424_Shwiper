@@ -10,7 +10,15 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// http request 1
+
+//Initialize App
+const firebase = require('firebase/app');
+require('firebase/auth');
+require('firebase/firestore');
+const config = require('./secrets/firebaseConfig.json');
+firebase.initializeApp(config);
+
+//HTTPS onCall fetchFromScraper function
 exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         // Throwing an HttpsError so that the client gets the error details.
@@ -69,5 +77,61 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
 //     db.collection("LikedAds").add(likedAd);
 //     res.send("Ad successfully Saved!");
 // });
+
+//HTTPS onCall signup function
+exports.signup = functions.https.onCall(async (data, context) => {
+    const name = data.name;
+    const email = data.email;
+    const password = data.password;
+    const confirmPassword = data.confirmPassword;
+
+    let result;
+
+    if (password === confirmPassword) {
+        result = await firebase.auth().createUserWithEmailAndPassword(email, password).then((user) => {
+            return firebase.firestore().collection("users").add({
+                name: name,
+                email: email,
+            }).then(() => {
+                return "Successfully created account";
+            }).catch((error) => {
+                return error.message;
+            });
+        }).catch((error) => {
+            return error.message
+        });
+    } else {
+        result = "Passwords do not match!"
+    }
+
+    return result;
+});
+
+//HTTPS onCall login function
+exports.login = functions.https.onCall(async (data, context) => {
+    const email = data.email;
+    const password = data.password;
+
+    let result;
+
+    result = await firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
+        return "Successfully logged into account";
+    }).catch((error) => {
+        return error.message
+    });
+
+    return result;
+});
+
+//HTTPS onCall login function
+exports.logout = functions.https.onCall(async (data, context) => {
+    let result = await firebase.auth().signOut().then(() => {
+        return "Successfully signed out of account";
+    }).catch((error) => {
+        return error.message
+    });
+
+    return result;
+});
 
 //Run with Firebase serve
