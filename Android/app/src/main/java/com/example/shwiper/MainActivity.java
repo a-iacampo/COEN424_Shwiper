@@ -22,6 +22,7 @@ import com.example.shwiper.CardStackCallback;
 import com.example.shwiper.ItemModel;
 import com.example.shwiper.R;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private List<ItemModel> addList() {
         List<ItemModel> items = new ArrayList<>();
-        items.add(new ItemModel(R.drawable.sample1, "Title", "250.55", "Montreal", "Test of description"));
+        items.add(new ItemModel("https://i.ebayimg.com/00/s/ODAwWDYwMA==/z/0FYAAOSwB65fst9t/$_57.JPG", "Title", "250.55", "Montreal", "Test of description"));
 
         //firebaseHelper.FectchFromScraper(); //Call cloud function
 /*        items.add(new ItemModel(R.drawable.sample2, "Marpuah", "20", "Malang"));
@@ -170,9 +171,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent2);
                 return true;
             case R.id.item3:
-                Toast.makeText(MainActivity.this, "item3 selected", Toast.LENGTH_SHORT).show();
+                logout();
                 return true;
         }
         return true;
+    }
+
+    //Logout User
+    private void logout() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

@@ -10,19 +10,26 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// http request 3
+
+//Initialize App
+const firebase = require('firebase/app');
+require('firebase/auth');
+require('firebase/firestore');
+const config = require('./secrets/firebaseConfig.json');
+firebase.initializeApp(config);
+
+//HTTPS onCall fetchFromScraper function
 exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         // Throwing an HttpsError so that the client gets the error details.
-        throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
-            'while authenticated.');
+        throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
     }
 
     const list = [];
 
     const options = {
         //Number of ads it fetches
-        minResults: 1, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
+        minResults: 20, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
     };
 
     const params = {
@@ -34,24 +41,30 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
         ads.forEach((ad) => {
             //TODO
             //Filter and clean title or description extra quotes
+            var title = ad.title.replace(/['"]+/g, '');
+            var description = ad.description.replace(/['"]+/g, '');
             list.push(`{
-                url: "${ad.url}",
-                title: "${ad.title}"
+                title: "${title}",
+                description: "${description}",
+                image: "${ad.image}",
+                price: "${ad.attributes.price}",
+                location: "${ad.attributes.location}",
+                url: "${ad.url}"
             }`);
         });
 
         const result = "[" + list + "]";
-        functions.logger.log(result);
         return result;
 
     }).catch((error => {
         functions.logger.log(error);
+        return error;
     }));
 
     return ads;
 });
 
-// // http request 3
+// // http request 2
 // exports.StoreLikedAds = functions.https.onRequest((req, res) => {
 //     const url = "https://www.kijiji.ca/v-clothing-lot/canada/wholesale-custom-hoodies-minimum-24/cas_364834";
 //     const userId = "SJM8DSFN4923MDS"
@@ -64,5 +77,61 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
 //     db.collection("LikedAds").add(likedAd);
 //     res.send("Ad successfully Saved!");
 // });
+
+//HTTPS onCall signup function
+exports.signup = functions.https.onCall(async (data, context) => {
+    const name = data.name;
+    const email = data.email;
+    const password = data.password;
+    const confirmPassword = data.confirmPassword;
+
+    let result;
+
+    if (password === confirmPassword) {
+        result = await firebase.auth().createUserWithEmailAndPassword(email, password).then((user) => {
+            return firebase.firestore().collection("users").add({
+                name: name,
+                email: email,
+            }).then(() => {
+                return "Successfully created account";
+            }).catch((error) => {
+                return error.message;
+            });
+        }).catch((error) => {
+            return error.message
+        });
+    } else {
+        result = "Passwords do not match!"
+    }
+
+    return result;
+});
+
+//HTTPS onCall login function
+exports.login = functions.https.onCall(async (data, context) => {
+    const email = data.email;
+    const password = data.password;
+
+    let result;
+
+    result = await firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
+        return "Successfully logged into account";
+    }).catch((error) => {
+        return error.message
+    });
+
+    return result;
+});
+
+//HTTPS onCall login function
+exports.logout = functions.https.onCall(async (data, context) => {
+    let result = await firebase.auth().signOut().then(() => {
+        return "Successfully signed out of account";
+    }).catch((error) => {
+        return error.message
+    });
+
+    return result;
+});
 
 //Run with Firebase serve
