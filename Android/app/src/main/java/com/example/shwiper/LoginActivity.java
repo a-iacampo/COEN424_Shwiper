@@ -2,7 +2,6 @@ package com.example.shwiper;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class loginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     protected TextView emailInput;
     protected TextView passwordInput;
@@ -46,7 +45,7 @@ public class loginActivity extends AppCompatActivity {
     //Check if the user is already logged into an account
     private void isLogin() {
         if(fAuth.getCurrentUser() != null) {
-            Intent intent = new Intent(loginActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
@@ -74,7 +73,7 @@ public class loginActivity extends AppCompatActivity {
     private View.OnClickListener signupButtonListener = new View.OnClickListener(){
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(loginActivity.this, SignupActivity.class);
+            Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
             startActivity(intent);
         }
     };
@@ -104,11 +103,11 @@ public class loginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-                    Toast.makeText(loginActivity.this, "Logged in Successfully" , Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(loginActivity.this, MainActivity.class);
+                    Toast.makeText(LoginActivity.this, "Logged in Successfully" , Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(loginActivity.this, "Error: " + task.getException().getMessage() , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage() , Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.INVISIBLE);
                 }
             }

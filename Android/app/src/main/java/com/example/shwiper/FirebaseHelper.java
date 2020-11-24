@@ -21,11 +21,8 @@ import java.util.List;
 public class FirebaseHelper {
     protected static final String TAG = "FirebaseHelper";
     protected FirebaseFunctions mFunctions;
-    protected FirebaseAuth fAuth;
 
     public FirebaseHelper() {
-        fAuth = FirebaseAuth.getInstance();
-        fAuth.signInWithEmailAndPassword("test@email.com", "123456");
         mFunctions = FirebaseFunctions.getInstance();
     }
 
