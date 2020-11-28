@@ -24,7 +24,8 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
         // Throwing an HttpsError so that the client gets the error details.
         throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
     }
-    const locationIndex = 10;
+    
+    const locationIndex = 0;
     const distance = 1;
 
     const list = [];
@@ -69,7 +70,6 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
         return result;
 
     }).catch((error => {
-        functions.logger.log(error);
         return error;
     }));
 
@@ -144,6 +144,34 @@ exports.logout = functions.https.onCall(async (data, context) => {
     });
 
     return result;
+});
+
+//HTTPS onCall fetchFromScraper function
+exports.getAd = functions.https.onCall(async (data, context) => {
+    // if (!context.auth) {
+    //     // Throwing an HttpsError so that the client gets the error details.
+    //     throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+    // }
+    const adUrl = data.url;
+
+    let ad = await kijiji.Ad.Get(adUrl).then((ad) => {
+        var title = ad.title.replace(/['"]+/g, '');
+        var description = ad.description.replace(/['"]+/g, '');
+
+        return (`{
+            title: "${title}",
+            description: "${description}",
+            images: "${ad.images}",
+            price: "${ad.attributes.price}",
+            location: "${ad.attributes.location}",
+            size: "${ad.attributes.size}"
+        }`);
+    }).catch((error => {
+        functions.logger.log(error);
+        return error;
+    }));
+
+    return ad;
 });
 
 //Run with Firebase serve
