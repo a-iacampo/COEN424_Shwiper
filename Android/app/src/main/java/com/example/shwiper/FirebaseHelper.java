@@ -20,7 +20,6 @@ import java.util.List;
 
 
 public class FirebaseHelper {
-    protected List<Ad> ads = new ArrayList<>();
 
     protected static final String TAG = "FirebaseHelper";
     protected FirebaseFunctions mFunctions;
@@ -44,7 +43,7 @@ public class FirebaseHelper {
         });
     }
 
-    public void FectchFromScraper() {
+    public void FectchFromScraper(FirebaseHelperCallback callback) {
         Log.d(TAG, "Start call");
 
         // [START call_add_message]
@@ -67,19 +66,27 @@ public class FirebaseHelper {
                     ObjectMapper mapper = new ObjectMapper();
                     mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
                     mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-                    ads = Arrays.asList(mapper.readValue(result, Ad[].class));
+                    List<Ad> ads = Arrays.asList(mapper.readValue(result, Ad[].class));
+
+                    ArrayList<ItemModel> items = new ArrayList<>();
+                    for (int i = 0; i < ads.size(); i++) {
+                        items.add(new ItemModel(ads.get(i).getImage(), ads.get(i).getTitle(), ads.get(i).getPrice(), ads.get(i).getLocation(), ads.get(i).getDescription()));
+                    }
+
+                    //Send collected strings to callback
+                    callback.onFetchAdsGot(items);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                List<ItemModel> items = new ArrayList<>();
-                for (int i = 0; i < ads.size(); i++) {
-                    items.add(new ItemModel(ads.get(i).getImage(), ads.get(i).getTitle(), ads.get(i).getPrice(), ads.get(i).getLocation(), ads.get(i).getDescription()));
-                }
 
-                // [END_EXCLUDE]
             }
         });
-        // [END call_add_message]
+    }
+
+    public interface FirebaseHelperCallback{
+        void onFetchAdsGot(ArrayList<ItemModel> items);
+
     }
 }

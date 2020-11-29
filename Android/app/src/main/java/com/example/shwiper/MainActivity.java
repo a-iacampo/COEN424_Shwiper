@@ -9,12 +9,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DiffUtil;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +33,7 @@ import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeableMethod;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,23 +47,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private Toolbar toolbar;
     private CardView cardView;
+    private ProgressBar progressBar;
+
 
     protected FirebaseHelper firebaseHelper;
+    //protected ArrayList<ItemModel> listFetchedOfAds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        firebaseHelper = new FirebaseHelper();
-
         initViews();
         setSupportActionBar(toolbar);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,R.string.drawer_open, R.string.drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        initFirebaseHelper();
+
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void initViews() {
+        Log.d(TAG, "initViews:started");
+        drawer = findViewById(R.id.drawer);
+        navigationView = findViewById(R.id.navigation_drawer);
+        toolbar = findViewById(R.id.toolbar);
+        progressBar = findViewById(R.id.progressBar);
+
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void initDrawerMenu(){
+
+    }
+
+    private void initFirebaseHelper(){
+        firebaseHelper = new FirebaseHelper();
+
+        //Attempts to fetch Kijiji Ads from Scraper
+        firebaseHelper.FectchFromScraper(new FirebaseHelper.FirebaseHelperCallback(){
+            @Override
+            public void onFetchAdsGot(ArrayList<ItemModel> items) {
+
+                progressBar.setVisibility(View.INVISIBLE);
+
+                initCardStack(items);
+            }
+        });
+
+
+    }
+
+    private void initCardStack(ArrayList<ItemModel> listFetchedOfAds){
         CardStackView cardStackView = findViewById(R.id.card_stack_view);
         manager = new CardStackLayoutManager(this, new CardStackListener() {
             @Override
@@ -80,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 // Paginating
                 if (manager.getTopPosition() == adapter.getItemCount() - 5){
-                    paginate();
+                    paginate(listFetchedOfAds);
                 }
 
             }
@@ -99,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onCardAppeared(View view, int position) {
                 TextView tv = view.findViewById(R.id.item_name);
                 Log.d(TAG, "onCardAppeared: " + position + ", nama: " + tv.getText());
+
             }
 
             @Override
@@ -118,13 +159,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         manager.setCanScrollHorizontal(true);
         manager.setSwipeableMethod(SwipeableMethod.Manual);
         manager.setOverlayInterpolator(new LinearInterpolator());
-        adapter = new CardStackAdapter(addList(), MainActivity.this);
+        adapter = new CardStackAdapter(listFetchedOfAds, MainActivity.this);
         cardStackView.setLayoutManager(manager);
         cardStackView.setAdapter(adapter);
         cardStackView.setItemAnimator(new DefaultItemAnimator());
 
     }
-
 
 
     private void initViews() {
@@ -136,9 +176,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void paginate() {
+   
+    private void paginate(ArrayList<ItemModel> items) {
         List<ItemModel> old = adapter.getItems();
-        List<ItemModel> baru = new ArrayList<>(addList());
+        List<ItemModel> baru = new ArrayList<>(items);
         CardStackCallback callback = new CardStackCallback(old, baru);
         DiffUtil.DiffResult hasil = DiffUtil.calculateDiff(callback);
         adapter.setItems(baru);

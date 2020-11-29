@@ -72,16 +72,18 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         }
 
         void setData(ItemModel data) {
-            Picasso.get()
-                    .load(data.getImage())
-                    .fit()
-                    .centerCrop()
-                    .into(image);
-            title.setText(data.getTitle());
-            price.setText("$ " + data.getPrice());
-            location.setText(data.getLocation());
-            description.setText(data.getDescription());
+            if (!data.getImage().equals("")) {
+                Picasso.get()
+                        .load(data.getImage())
+                        .fit()
+                        .centerCrop()
+                        .into(image);
+                title.setText(data.getTitle());
+                price.setText("$ " + data.getPrice());
+                location.setText(data.getLocation());
+                description.setText(data.getDescription());
 
+            }
         }
 
 
