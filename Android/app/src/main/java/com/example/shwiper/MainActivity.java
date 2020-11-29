@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DiffUtil;
@@ -45,7 +46,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private CardView cardView;
     private ProgressBar progressBar;
+
 
     protected FirebaseHelper firebaseHelper;
     //protected ArrayList<ItemModel> listFetchedOfAds;
@@ -149,19 +152,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         manager.setVisibleCount(3);
         manager.setTranslationInterval(8.0f);
         manager.setScaleInterval(0.95f);
+        manager.setStackFrom(StackFrom.Bottom);
         manager.setSwipeThreshold(0.3f);
         manager.setMaxDegree(20.0f);
         manager.setDirections(Direction.HORIZONTAL);
         manager.setCanScrollHorizontal(true);
         manager.setSwipeableMethod(SwipeableMethod.Manual);
         manager.setOverlayInterpolator(new LinearInterpolator());
-        adapter = new CardStackAdapter(listFetchedOfAds);
+        adapter = new CardStackAdapter(listFetchedOfAds, MainActivity.this);
         cardStackView.setLayoutManager(manager);
         cardStackView.setAdapter(adapter);
         cardStackView.setItemAnimator(new DefaultItemAnimator());
 
     }
 
+
+    private void initViews() {
+        Log.d(TAG, "initViews:started");
+        drawer = findViewById(R.id.drawer);
+        navigationView = findViewById(R.id.navigation_drawer);
+        toolbar = findViewById(R.id.toolbar);
+
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+   
     private void paginate(ArrayList<ItemModel> items) {
         List<ItemModel> old = adapter.getItems();
         List<ItemModel> baru = new ArrayList<>(items);
@@ -169,6 +184,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DiffUtil.DiffResult hasil = DiffUtil.calculateDiff(callback);
         adapter.setItems(baru);
         hasil.dispatchUpdatesTo(adapter);
+    }
+
+    private List<ItemModel> addList() {
+        List<ItemModel> items = new ArrayList<>();
+        items.add(new ItemModel("https://i.ebayimg.com/00/s/ODAwWDYwMA==/z/0FYAAOSwB65fst9t/$_57.JPG", "Title", "250.55", "Montreal", "Test of description"));
+
+        //firebaseHelper.FectchFromScraper(); //Call cloud function
+        items.add(new ItemModel("https://i.ebayimg.com/00/s/ODAwWDYwMA==/z/0FYAAOSwB65fst9t/$_57.JPG", "Marpuah", "20", "Malang", "fas"));
+        /*items.add(new ItemModel(R.drawable.sample3, "Sukijah", "27", "Jonggol"));
+        items.add(new ItemModel(R.drawable.sample4, "Markobar", "19", "Bandung"));
+        items.add(new ItemModel(R.drawable.sample5, "Marmut", "25", "Hutan"));
+
+        items.add(new ItemModel(R.drawable.sample1, "Markonah", "24", "Jember"));
+        items.add(new ItemModel(R.drawable.sample2, "Marpuah", "20", "Malang"));
+        items.add(new ItemModel(R.drawable.sample3, "Sukijah", "27", "Jonggol"));
+        items.add(new ItemModel(R.drawable.sample4, "Markobar", "19", "Bandung"));
+        items.add(new ItemModel(R.drawable.sample5, "Marmut", "25", "Hutan"));*/
+        return items;
     }
 
     @Override

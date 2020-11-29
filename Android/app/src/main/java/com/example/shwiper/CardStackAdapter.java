@@ -1,5 +1,8 @@
 package com.example.shwiper;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -7,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -16,14 +20,20 @@ import java.net.HttpURLConnection;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
+public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder>{
 
     private List<ItemModel> items;
+    private Context context;
 
-    public CardStackAdapter(List<ItemModel> items) {
+    public CardStackAdapter(List<ItemModel> items, Context context) {
         this.items = items;
+        this.context = context;
     }
 
     @NonNull
@@ -45,15 +55,20 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
+        CardView cardView;
         ImageView image;
         TextView title, location, description, price;
+
         ViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.cardViewID);
             image = itemView.findViewById(R.id.item_image);
             title = itemView.findViewById(R.id.item_name);
             location = itemView.findViewById(R.id.item_location);
             description = itemView.findViewById(R.id.item_description);
             price = itemView.findViewById(R.id.item_price);
+
+            cardView.setOnClickListener(cardListener);
         }
 
         void setData(ItemModel data) {
@@ -70,7 +85,16 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
             }
         }
+
+
     }
+
+    private View.OnClickListener cardListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            openDialog();
+        }
+    };
 
     public List<ItemModel> getItems() {
         return items;
@@ -80,5 +104,11 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         this.items = items;
     }
 
+    public void openDialog(){
+        cardOnClickDialog cardDialog = new cardOnClickDialog();
+        cardDialog.show(((FragmentActivity) context).getSupportFragmentManager(), "cardDialog");
+
+
+    }
 
 }
