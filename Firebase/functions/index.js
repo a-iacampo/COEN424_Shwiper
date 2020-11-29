@@ -64,13 +64,6 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     return ads;
 });
 
-exports.storeLikedAd = functions.https.onCall( async (data, context) => {
-	const url = data.url;
-	const uid = context.auth.uid;
-	
-	return await db.collection('users').doc(`${uid}`).collection('LikedAds').set({"urlToAd" : `${url}`});
-});
-
 // // http request 2
 // exports.StoreLikedAds = functions.https.onRequest((req, res) => {
 //     const url = "https://www.kijiji.ca/v-clothing-lot/canada/wholesale-custom-hoodies-minimum-24/cas_364834";
