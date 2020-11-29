@@ -64,6 +64,46 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     return ads;
 });
 
+//Store Liked Ads to user's LikedAds collection
+exports.storeLikedAds = functions.https.onCall(async (data, context) => {
+
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+    }
+
+    const uid = context.auth.uid;
+    const url = data.url;
+
+    return await db.collection('users').doc(`${uid}`).collection('LikedAds').set({"urlToAd" : `${uid}`});
+
+});
+
+//fetch all liked ads from user's LikedAds collection
+exports.storeLikedAds = functions.https.onCall(async (data, context) => {
+
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+    }
+    
+    var likedAds
+    const uid = context.auth.uid;
+
+    let doc = await db.collection('users').doc(`${uid}`).collection('LikedAds').then((docs) => {
+        docs.forEach((doc) => {
+            list.push(doc);
+        });
+        const result = "[" + likedAds + "]";
+        return result;
+
+    }).catch((error => {
+        functions.logger.log(error);
+        return error;
+    }));
+
+});
+
 // // http request 2
 // exports.StoreLikedAds = functions.https.onRequest((req, res) => {
 //     const url = "https://www.kijiji.ca/v-clothing-lot/canada/wholesale-custom-hoodies-minimum-24/cas_364834";
