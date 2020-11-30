@@ -24,17 +24,28 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
         // Throwing an HttpsError so that the client gets the error details.
         throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
     }
+    
+    const locationIndex = 0;
+    const distance = 1;
 
     const list = [];
+    const locations = [kijiji.locations, 
+        kijiji.locations.QUEBEC.GREATER_MONTREAL, 
+        kijiji.locations.QUEBEC.GREATER_MONTREAL.CITY_OF_MONTREAL,
+        kijiji.locations.QUEBEC.GREATER_MONTREAL.LAVAL_NORTH_SHORE,
+        kijiji.locations.QUEBEC.GREATER_MONTREAL.LONGUEUIL_SOUTH_SHORE,
+        kijiji.locations.QUEBEC.GREATER_MONTREAL.WEST_ISLAND];
 
     const options = {
         //Number of ads it fetches
-        minResults: 20, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
+        minResults: 40, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
     };
 
     const params = {
-        locationId: kijiji.locations.QUEBEC.GREATER_MONTREAL,
-        categoryId: kijiji.categories.BUY_AND_SELL.CLOTHING
+        locationId: locations[locationIndex],
+        categoryId: kijiji.categories.BUY_AND_SELL.CLOTHING,
+        sortType: "DATE_DESCENDING",
+        distance: distance
     };
 
     let ads = await kijiji.search(params, options).then((ads) => {
@@ -43,21 +54,22 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
             //Filter and clean title or description extra quotes
             var title = ad.title.replace(/['"]+/g, '');
             var description = ad.description.replace(/['"]+/g, '');
-            list.push(`{
-                title: "${title}",
-                description: "${description}",
-                image: "${ad.image}",
-                price: "${ad.attributes.price}",
-                location: "${ad.attributes.location}",
-                url: "${ad.url}"
-            }`);
+            if(!(ad.image === "")) {
+                list.push(`{
+                    title: "${title}",
+                    description: "${description}",
+                    image: "${ad.image}",
+                    price: "${ad.attributes.price}",
+                    location: "${ad.attributes.location}",
+                    url: "${ad.url}"
+                }`);
+            }
         });
 
         const result = "[" + list + "]";
         return result;
 
     }).catch((error => {
-        functions.logger.log(error);
         return error;
     }));
 
@@ -189,5 +201,32 @@ exports.logout = functions.https.onCall(async (data, context) => {
     return result;
 });
 
+//HTTPS onCall fetchFromScraper function
+exports.getAd = functions.https.onCall(async (data, context) => {
+    // if (!context.auth) {
+    //     // Throwing an HttpsError so that the client gets the error details.
+    //     throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+    // }
+    const adUrl = data.url;
+
+    let ad = await kijiji.Ad.Get(adUrl).then((ad) => {
+        var title = ad.title.replace(/['"]+/g, '');
+        var description = ad.description.replace(/['"]+/g, '');
+
+        return (`{
+            title: "${title}",
+            description: "${description}",
+            images: "${ad.images}",
+            price: "${ad.attributes.price}",
+            location: "${ad.attributes.location}",
+            size: "${ad.attributes.size}"
+        }`);
+    }).catch((error => {
+        functions.logger.log(error);
+        return error;
+    }));
+
+    return ad;
+});
 
 //Run with Firebase serve
