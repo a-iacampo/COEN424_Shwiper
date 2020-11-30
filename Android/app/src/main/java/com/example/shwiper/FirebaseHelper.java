@@ -16,11 +16,12 @@ import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class FirebaseHelper {
-    protected List<Ad> ads = new ArrayList<>();
 
     protected static final String TAG = "FirebaseHelper";
     protected FirebaseFunctions mFunctions;
@@ -44,7 +45,7 @@ public class FirebaseHelper {
         });
     }
 
-    public void FectchFromScraper() {
+    public void FectchFromScraper(FirebaseHelperCallback callback) {
         Log.d(TAG, "Start call");
 
         // [START call_add_message]
@@ -67,19 +68,108 @@ public class FirebaseHelper {
                     ObjectMapper mapper = new ObjectMapper();
                     mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
                     mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-                    ads = Arrays.asList(mapper.readValue(result, Ad[].class));
+                    List<Ad> ads = Arrays.asList(mapper.readValue(result, Ad[].class));
+
+                    //Send collected strings to callback
+                    callback.onFetchAdsGot(ads);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                List<ItemModel> items = new ArrayList<>();
-                for (int i = 0; i < ads.size(); i++) {
-                    items.add(new ItemModel(ads.get(i).getImage(), ads.get(i).getTitle(), ads.get(i).getPrice(), ads.get(i).getLocation(), ads.get(i).getDescription()));
-                }
-
-                // [END_EXCLUDE]
             }
         });
-        // [END call_add_message]
+    }
+
+    private Task<String> onCallStoreLikedAd(Ad likedAd) {
+        Log.d(TAG, "onCallStoreLikedAd");
+
+        //Create Map for likedAd JSON document
+        Map<String, Object> data = new HashMap<>();
+        data.put("title", likedAd.getTitle());
+        data.put("image", likedAd.getImage());
+        data.put("price", likedAd.getPrice());
+        data.put("description", likedAd.getDescription());
+        data.put("location", likedAd.getLocation());
+        data.put("url", likedAd.getUrl());
+
+        return mFunctions.getHttpsCallable("storeLikedAd").call(data).continueWith(new Continuation<HttpsCallableResult, String>() {
+            @Override
+            public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+
+                //returns nothing....
+                return "";
+            }
+        });
+    }
+
+    public void storeLikedAd(Ad likedAd){
+
+        onCallStoreLikedAd(likedAd).addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (!task.isSuccessful()) {
+                    Exception e = task.getException();
+                    if (e instanceof FirebaseFunctionsException) {
+                        FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                        FirebaseFunctionsException.Code code = ffe.getCode();
+                        Object details = ffe.getDetails();
+                    }
+                    Log.d(TAG, "ERROR: " + e);
+                }
+            }
+        });
+    }
+
+    private Task<String> onCallFetchLikedAds() {
+
+        return mFunctions.getHttpsCallable("fetchLikedAds").call().continueWith(new Continuation<HttpsCallableResult, String>() {
+            @Override
+            public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                String result = task.getResult().getData().toString();
+                Log.d(TAG, "Result: " + result);
+                return result;
+            }
+        });
+    }
+
+    public void fetchLikedAds(FirebaseHelperCallback callback) {
+        Log.d(TAG, "Start fetchLikedAds");
+
+        // [START call_add_message]
+        onCallFetchLikedAds().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (!task.isSuccessful()) {
+                    Exception e = task.getException();
+                    if (e instanceof FirebaseFunctionsException) {
+                        FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                        FirebaseFunctionsException.Code code = ffe.getCode();
+                        Object details = ffe.getDetails();
+                    }
+                    Log.d(TAG, "ERROR: " + e);
+                    return;
+                }
+                // [START_EXCLUDE]
+                try {
+                    String result = task.getResult();
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                    mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+                    List<Ad> likedAds = Arrays.asList(mapper.readValue(result, Ad[].class));
+
+
+                    //Send collected strings to callback
+                    callback.onFetchLikedAds(likedAds);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface FirebaseHelperCallback{
+        void onFetchAdsGot(List<Ad> items);
+        void onFetchLikedAds(List<Ad> items);
     }
 }
