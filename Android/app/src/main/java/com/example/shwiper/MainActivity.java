@@ -95,9 +95,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 initCardStack(items);
             }
+
+            @Override
+            public void onFetchLikedAds(ArrayList<ItemModel> items) {
+
+            }
         });
-
-
     }
 
     private void initCardStack(ArrayList<ItemModel> listFetchedOfAds){
@@ -112,10 +115,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onCardSwiped(Direction direction) {
                 Log.d(TAG, "onCardSwiped: p=" + manager.getTopPosition() + " d=" + direction);
                 if (direction == Direction.Right){
-                    Toast.makeText(MainActivity.this, "Direction Right", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Liked !", Toast.LENGTH_SHORT).show();
+                    firebaseHelper.storeLikedAd(listFetchedOfAds.get(manager.getTopPosition()));
                 }
                 if (direction == Direction.Left){
-                    Toast.makeText(MainActivity.this, "Direction Left", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Did not Like !", Toast.LENGTH_SHORT).show();
                 }
 
                 // Paginating
@@ -167,16 +171,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void initViews() {
-        Log.d(TAG, "initViews:started");
-        drawer = findViewById(R.id.drawer);
-        navigationView = findViewById(R.id.navigation_drawer);
-        toolbar = findViewById(R.id.toolbar);
-
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-
-   
     private void paginate(ArrayList<ItemModel> items) {
         List<ItemModel> old = adapter.getItems();
         List<ItemModel> baru = new ArrayList<>(items);
@@ -186,23 +180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         hasil.dispatchUpdatesTo(adapter);
     }
 
-    private List<ItemModel> addList() {
-        List<ItemModel> items = new ArrayList<>();
-        items.add(new ItemModel("https://i.ebayimg.com/00/s/ODAwWDYwMA==/z/0FYAAOSwB65fst9t/$_57.JPG", "Title", "250.55", "Montreal", "Test of description"));
-
-        //firebaseHelper.FectchFromScraper(); //Call cloud function
-        items.add(new ItemModel("https://i.ebayimg.com/00/s/ODAwWDYwMA==/z/0FYAAOSwB65fst9t/$_57.JPG", "Marpuah", "20", "Malang", "fas"));
-        /*items.add(new ItemModel(R.drawable.sample3, "Sukijah", "27", "Jonggol"));
-        items.add(new ItemModel(R.drawable.sample4, "Markobar", "19", "Bandung"));
-        items.add(new ItemModel(R.drawable.sample5, "Marmut", "25", "Hutan"));
-
-        items.add(new ItemModel(R.drawable.sample1, "Markonah", "24", "Jember"));
-        items.add(new ItemModel(R.drawable.sample2, "Marpuah", "20", "Malang"));
-        items.add(new ItemModel(R.drawable.sample3, "Sukijah", "27", "Jonggol"));
-        items.add(new ItemModel(R.drawable.sample4, "Markobar", "19", "Bandung"));
-        items.add(new ItemModel(R.drawable.sample5, "Marmut", "25", "Hutan"));*/
-        return items;
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

@@ -64,6 +64,61 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     return ads;
 });
 
+//Store Liked Ads to user's LikedAds collection
+exports.storeLikedAd = functions.https.onCall(async (data, context) => {
+
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+    }
+
+    const uid = context.auth.uid;
+
+    await db.collection('users').doc(`${uid}`).collection('likedAds').add(data)
+    .catch((error) => {
+        functions.logger.log(error);
+        return error;
+    });
+
+});
+
+//fetch all liked ads from user's LikedAds collection
+exports.fetchLikedAds = functions.https.onCall(async (data, context) => {
+
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+    }
+    
+    var likedAds = []
+    const uid = context.auth.uid;
+
+    
+    const snapshot = await db.collection('users').doc(`${uid}`).collection('likedAds').get().then( (snapshot) => {
+        snapshot.forEach(doc => {
+            let data = doc.data();
+            likedAds.push(`{
+                title: "${data.title}",
+                description: "${data.description}",
+                image: "${data.image}",
+                price: "${data.price}",
+                location: "${data.location}",
+                url: "${data.url}"    
+            }`);
+        });
+        const result = "[" + likedAds + "]";
+        return result
+        
+    })
+    .catch((error => {
+        functions.logger.log(error);
+        return error;
+    }));
+    
+    return snapshot
+
+});
+
 // // http request 2
 // exports.StoreLikedAds = functions.https.onRequest((req, res) => {
 //     const url = "https://www.kijiji.ca/v-clothing-lot/canada/wholesale-custom-hoodies-minimum-24/cas_364834";
@@ -133,5 +188,6 @@ exports.logout = functions.https.onCall(async (data, context) => {
 
     return result;
 });
+
 
 //Run with Firebase serve
