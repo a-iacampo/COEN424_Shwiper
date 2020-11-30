@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         firebaseHelper = new FirebaseHelper();
 
         //Attempts to fetch Kijiji Ads from Scraper
-        firebaseHelper.FectchFromScraper(new FirebaseHelper.FirebaseHelperCallback(){
+        firebaseHelper.FetchFromScraper(new FirebaseHelper.FirebaseHelperCallback(){
             @Override
             public void onFetchAdsGot(List<Ad> items) {
 
@@ -97,6 +97,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onFetchLikedAds(List<Ad> items) {
+
+            }
+
+            @Override
+            public void onFetchAd(DetailedAd ad) {
+
+            }
+        });
+    }
+
+    private void refetchAds(){
+        firebaseHelper = new FirebaseHelper();
+
+        //Attempts to fetch Kijiji Ads from Scraper
+        firebaseHelper.FetchFromScraper(new FirebaseHelper.FirebaseHelperCallback(){
+            @Override
+            public void onFetchAdsGot(List<Ad> items) {
+                paginate(items);
+            }
+
+            @Override
+            public void onFetchLikedAds(List<Ad> items) {
+
+            }
+
+            @Override
+            public void onFetchAd(DetailedAd ad) {
 
             }
         });
@@ -123,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 // Paginating
                 if (manager.getTopPosition() == adapter.getItemCount() - 5){
-                    paginate(listFetchedOfAds);
+                    refetchAds();
                 }
 
             }
@@ -152,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         manager.setStackFrom(StackFrom.None);
-        manager.setVisibleCount(3);
+        manager.setVisibleCount(1);
         manager.setTranslationInterval(8.0f);
         manager.setScaleInterval(0.95f);
         manager.setStackFrom(StackFrom.Bottom);
@@ -168,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         cardStackView.setItemAnimator(new DefaultItemAnimator());
 
     }
-
 
     private void paginate(List<Ad> items) {
         List<Ad> old = adapter.getItems();
