@@ -73,34 +73,47 @@ exports.storeLikedAds = functions.https.onCall(async (data, context) => {
     }
 
     const uid = context.auth.uid;
-    const url = data.url;
 
-    return await db.collection('users').doc(`${uid}`).collection('LikedAds').set({"urlToAd" : `${uid}`});
+    await db.collection('users').doc(`${uid}`).collection('likedAds').add(data)
+    .catch((error) => {
+        functions.logger.log(error);
+        return error;
+    });
 
 });
 
 //fetch all liked ads from user's LikedAds collection
-exports.storeLikedAds = functions.https.onCall(async (data, context) => {
+exports.fetchLikedAds = functions.https.onCall(async (data, context) => {
 
     if (!context.auth) {
         // Throwing an HttpsError so that the client gets the error details.
         throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
     }
     
-    var likedAds
+    var likedAds = []
     const uid = context.auth.uid;
 
-    let doc = await db.collection('users').doc(`${uid}`).collection('LikedAds').then((docs) => {
-        docs.forEach((doc) => {
-            list.push(doc);
+    
+    const snapshot = await db.collection('users').doc(`${uid}`).collection('likedAds').get().then( (snapshot) => {
+        snapshot.forEach(doc => {
+            let data = doc.data();
+            likedAds.push(`{
+                title : "${data.title}",
+                price : "${data.price}",
+                image : "${data.image}",
+                url : "${data.url}"
+            }`);
         });
         const result = "[" + likedAds + "]";
-        return result;
-
-    }).catch((error => {
+        return result
+        
+    })
+    .catch((error => {
         functions.logger.log(error);
         return error;
     }));
+    
+    return snapshot
 
 });
 
@@ -173,5 +186,6 @@ exports.logout = functions.https.onCall(async (data, context) => {
 
     return result;
 });
+
 
 //Run with Firebase serve
