@@ -65,7 +65,7 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
 });
 
 //Store Liked Ads to user's LikedAds collection
-exports.storeLikedAds = functions.https.onCall(async (data, context) => {
+exports.storeLikedAd = functions.https.onCall(async (data, context) => {
 
     if (!context.auth) {
         // Throwing an HttpsError so that the client gets the error details.
