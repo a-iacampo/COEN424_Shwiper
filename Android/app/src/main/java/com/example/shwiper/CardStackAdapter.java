@@ -28,10 +28,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder>{
 
-    private List<ItemModel> items;
+    private List<Ad> items;
     private Context context;
 
-    public CardStackAdapter(List<ItemModel> items, Context context) {
+    public CardStackAdapter(List<Ad> items, Context context) {
         this.items = items;
         this.context = context;
     }
@@ -71,7 +71,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             cardView.setOnClickListener(cardListener);
         }
 
-        void setData(ItemModel data) {
+        void setData(Ad data) {
             if (!data.getImage().equals("")) {
                 Picasso.get()
                         .load(data.getImage())
@@ -96,11 +96,11 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         }
     };
 
-    public List<ItemModel> getItems() {
+    public List<Ad> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemModel> items) {
+    public void setItems(List<Ad> items) {
         this.items = items;
     }
 
