@@ -98,10 +98,12 @@ exports.fetchLikedAds = functions.https.onCall(async (data, context) => {
         snapshot.forEach(doc => {
             let data = doc.data();
             likedAds.push(`{
-                title : "${data.title}",
-                price : "${data.price}",
-                image : "${data.image}",
-                url : "${data.url}"
+                title: "${data.title}",
+                description: "${data.description}",
+                image: "${data.image}",
+                price: "${data.price}",
+                location: "${data.location}",
+                url: "${data.url}"    
             }`);
         });
         const result = "[" + likedAds + "]";
