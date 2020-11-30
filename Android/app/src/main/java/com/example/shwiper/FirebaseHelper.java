@@ -70,13 +70,8 @@ public class FirebaseHelper {
                     mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
                     List<Ad> ads = Arrays.asList(mapper.readValue(result, Ad[].class));
 
-                    ArrayList<ItemModel> items = new ArrayList<>();
-                    for (int i = 0; i < ads.size(); i++) {
-                        items.add(new ItemModel(ads.get(i).getImage(), ads.get(i).getTitle(), ads.get(i).getPrice(), ads.get(i).getLocation(), ads.get(i).getDescription(), ads.get(i).getUrl()));
-                    }
-
                     //Send collected strings to callback
-                    callback.onFetchAdsGot(items);
+                    callback.onFetchAdsGot(ads);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -85,7 +80,7 @@ public class FirebaseHelper {
         });
     }
 
-    private Task<String> onCallStoreLikedAd(ItemModel likedAd) {
+    private Task<String> onCallStoreLikedAd(Ad likedAd) {
         Log.d(TAG, "onCallStoreLikedAd");
 
         //Create Map for likedAd JSON document
@@ -107,7 +102,7 @@ public class FirebaseHelper {
         });
     }
 
-    public void storeLikedAd(ItemModel likedAd){
+    public void storeLikedAd(Ad likedAd){
 
         onCallStoreLikedAd(likedAd).addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
@@ -162,13 +157,9 @@ public class FirebaseHelper {
                     mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
                     List<Ad> likedAds = Arrays.asList(mapper.readValue(result, Ad[].class));
 
-                    ArrayList<ItemModel> items = new ArrayList<>();
-                    for (int i = 0; i < likedAds.size(); i++) {
-                        items.add(new ItemModel(likedAds.get(i).getImage(), likedAds.get(i).getTitle(), likedAds.get(i).getPrice(), likedAds.get(i).getLocation(), likedAds.get(i).getDescription(), likedAds.get(i).getUrl()));
-                    }
 
                     //Send collected strings to callback
-                    callback.onFetchLikedAds(items);
+                    callback.onFetchLikedAds(likedAds);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -178,7 +169,7 @@ public class FirebaseHelper {
     }
 
     public interface FirebaseHelperCallback{
-        void onFetchAdsGot(ArrayList<ItemModel> items);
-        void onFetchLikedAds(ArrayList<ItemModel> items);
+        void onFetchAdsGot(List<Ad> items);
+        void onFetchLikedAds(List<Ad> items);
     }
 }

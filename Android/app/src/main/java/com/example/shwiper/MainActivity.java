@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.example.shwiper.CardStackAdapter;
 import com.example.shwiper.CardStackCallback;
-import com.example.shwiper.ItemModel;
 import com.example.shwiper.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     protected FirebaseHelper firebaseHelper;
-    //protected ArrayList<ItemModel> listFetchedOfAds;
+    //protected ArrayList<Ad> listFetchedOfAds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Attempts to fetch Kijiji Ads from Scraper
         firebaseHelper.FectchFromScraper(new FirebaseHelper.FirebaseHelperCallback(){
             @Override
-            public void onFetchAdsGot(ArrayList<ItemModel> items) {
+            public void onFetchAdsGot(List<Ad> items) {
 
                 progressBar.setVisibility(View.INVISIBLE);
 
@@ -97,13 +96,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             @Override
-            public void onFetchLikedAds(ArrayList<ItemModel> items) {
+            public void onFetchLikedAds(List<Ad> items) {
 
             }
         });
     }
 
-    private void initCardStack(ArrayList<ItemModel> listFetchedOfAds){
+    private void initCardStack(List<Ad> listFetchedOfAds){
         CardStackView cardStackView = findViewById(R.id.card_stack_view);
         manager = new CardStackLayoutManager(this, new CardStackListener() {
             @Override
@@ -171,9 +170,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void paginate(ArrayList<ItemModel> items) {
-        List<ItemModel> old = adapter.getItems();
-        List<ItemModel> baru = new ArrayList<>(items);
+    private void paginate(List<Ad> items) {
+        List<Ad> old = adapter.getItems();
+        List<Ad> baru = new ArrayList<>(items);
         CardStackCallback callback = new CardStackCallback(old, baru);
         DiffUtil.DiffResult hasil = DiffUtil.calculateDiff(callback);
         adapter.setItems(baru);
