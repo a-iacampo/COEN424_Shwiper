@@ -54,6 +54,8 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
             //Filter and clean title or description extra quotes
             var title = ad.title.replace(/['"]+/g, '');
             var description = ad.description.replace(/['"]+/g, '');
+            description = description.replace(/(\r\n|\n|\r)/gm, "\\n");
+
             if(!(ad.image === "")) {
                 list.push(`{
                     title: "${title}",
@@ -198,7 +200,7 @@ exports.getAd = functions.https.onCall(async (data, context) => {
     let ad = await kijiji.Ad.Get(adUrl).then((ad) => {
         var title = ad.title.replace(/['"]+/g, '');
         var description = ad.description.replace(/['"]+/g, '');
-        description = description.replace(/(\n)/gm, "\\n");
+        description = description.replace(/(\r\n|\n|\r)/gm, "\\n");
 
         return (`{
             title: "${title}",
