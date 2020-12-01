@@ -94,11 +94,14 @@ public class OnCardClick extends AppCompatActivity {
     }
 
     private void loadUI(DetailedAd ad) {
-        
-
         itemName.setText(ad.getTitle());
         itemPrice.setText("Price: " + ad.getPrice() + "$");
-        itemSize.setText("Size: " + ad.getSize());
+
+        if(ad.getSize().equals("undefined"))
+            itemSize.setText("Size: -");
+        else
+            itemSize.setText("Size: " + ad.getSize());
+
         staticDescription.setText("Description");
         itemLocation.setText(ad.getLocation());
         itemDescription.setText(ad.getDescription());
