@@ -43,7 +43,7 @@ public class OnCardClick extends AppCompatActivity {
     private void setupUI() {
         toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView = findViewById(R.id.horizontal_recycler_view);
         recyclerView.setHasFixedSize(false);
