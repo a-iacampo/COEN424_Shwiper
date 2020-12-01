@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ProgressBar;
@@ -16,6 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OnCardClick extends AppCompatActivity {
+
+    static String TAG = "OnCarClick";
+
     protected Toolbar toolbar;
     protected TextView itemName;
     protected TextView itemPrice;
@@ -38,6 +43,24 @@ public class OnCardClick extends AppCompatActivity {
         setContentView(R.layout.activity_on_card_click);
         setupUI();
         loadAd();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.d(TAG, "Click back button");
+                // app icon in action bar clicked; go home
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     private void setupUI() {
