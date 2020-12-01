@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import java.util.ArrayList;
@@ -56,6 +58,8 @@ public class adsLikedActivity extends AppCompatActivity implements adsLikedListA
 
     @Override
     public void onLikedAdsClick(int position) {
-
+        Ad selectedAd = likedAdsList.get(position);
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(selectedAd.getUrl()));
+        startActivity(browserIntent);
     }
 }
