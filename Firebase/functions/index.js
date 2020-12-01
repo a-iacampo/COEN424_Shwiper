@@ -50,11 +50,12 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
 
     let ads = await kijiji.search(params, options).then((ads) => {
         ads.forEach((ad) => {
-            //TODO
-            //Filter and clean title or description extra quotes
+            //Clean data before sending to client
             var title = ad.title.replace(/['"]+/g, '');
+            title = title.replace(/(\r\n|\n|\r)/gm, "\\n");
             var description = ad.description.replace(/['"]+/g, '');
             description = description.replace(/(\r\n|\n|\r)/gm, "\\n");
+            var location = ad.attributes.location.replace(/(\r\n|\n|\r)/gm, "\\n");
 
             if(!(ad.image === "")) {
                 list.push(`{
@@ -62,7 +63,7 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
                     description: "${description}",
                     image: "${ad.image}",
                     price: "${ad.attributes.price}",
-                    location: "${ad.attributes.location}",
+                    location: "${location}",
                     url: "${ad.url}"
                 }`);
             }
@@ -199,15 +200,17 @@ exports.getAd = functions.https.onCall(async (data, context) => {
 
     let ad = await kijiji.Ad.Get(adUrl).then((ad) => {
         var title = ad.title.replace(/['"]+/g, '');
+        title = title.replace(/(\r\n|\n|\r)/gm, "\\n");
         var description = ad.description.replace(/['"]+/g, '');
         description = description.replace(/(\r\n|\n|\r)/gm, "\\n");
+        var location = ad.attributes.location.replace(/(\r\n|\n|\r)/gm, "\\n");
 
         return (`{
             title: "${title}",
             description: "${description}",
             images: "${ad.images}",
             price: "${ad.attributes.price}",
-            location: "${ad.attributes.location}",
+            location: "${location}",
             size: "${ad.attributes.size}"
         }`);
     }).catch((error => {
