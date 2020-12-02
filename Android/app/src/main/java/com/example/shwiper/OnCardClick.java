@@ -120,9 +120,9 @@ public class OnCardClick extends AppCompatActivity {
         itemName.setText(ad.getTitle());
 
         if(ad.getPrice().equals("undefined"))
-            itemPrice.setText("Price: " + ad.getPrice() + "$");
-        else
             itemPrice.setText("Price: -");
+        else
+            itemPrice.setText("Price: " + ad.getPrice() + "$");
 
         if(ad.getSize().equals("undefined"))
             itemSize.setText("Size: -");
