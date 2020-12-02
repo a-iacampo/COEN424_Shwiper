@@ -14,7 +14,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder>{
@@ -96,9 +95,5 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         this.items = items;
     }
 
-    public void openDialog(){
-        cardOnClickDialog cardDialog = new cardOnClickDialog();
-        cardDialog.show(((FragmentActivity) context).getSupportFragmentManager(), "cardDialog");
-    }
 
 }

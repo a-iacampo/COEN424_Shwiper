@@ -112,7 +112,7 @@ public class OnCardClick extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(OnCardClick.this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new horizontalListAdapter(OnCardClick.this, imageUrl);
+        mAdapter = new horizontalListAdapter(imageUrl);
         recyclerView.setAdapter(mAdapter);
     }
 

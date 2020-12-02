@@ -9,7 +9,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DiffUtil;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,9 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.shwiper.CardStackAdapter;
-import com.example.shwiper.CardStackCallback;
-import com.example.shwiper.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
@@ -32,7 +28,6 @@ import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeableMethod;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,11 +136,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onCardSwiped(Direction direction) {
                 Log.d(TAG, "onCardSwiped: p=" + manager.getTopPosition() + " d=" + direction);
                 if (direction == Direction.Right){
-                    Toast.makeText(MainActivity.this, "Liked !", Toast.LENGTH_SHORT).show();
                     firebaseHelper.storeLikedAd(listFetchedOfAds.get(manager.getTopPosition()));
                 }
                 if (direction == Direction.Left){
-                    Toast.makeText(MainActivity.this, "Did not Like !", Toast.LENGTH_SHORT).show();
                 }
 
                 // Paginating

@@ -1,20 +1,16 @@
 package com.example.shwiper;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class horizontalListAdapter extends RecyclerView.Adapter<horizontalListAdapter.MyViewHolder> {
@@ -22,10 +18,8 @@ public class horizontalListAdapter extends RecyclerView.Adapter<horizontalListAd
     private static final String TAG = "ListCourseAdapter";
 
     private List<String> adImages;
-    private Context mContext;
 
-    public horizontalListAdapter(Context mContext, List<String> adImages) {
-        this.mContext = mContext;
+    public horizontalListAdapter(List<String> adImages) {
         this.adImages = adImages;
 
     }
@@ -57,7 +51,6 @@ public class horizontalListAdapter extends RecyclerView.Adapter<horizontalListAd
                 .fit()
                 .centerCrop()
                 .into(holder.adPicture);
-        //LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
     }
 
     @Override
