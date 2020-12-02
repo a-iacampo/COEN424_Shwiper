@@ -45,6 +45,11 @@ public class adsLikedActivity extends AppCompatActivity implements adsLikedListA
                 initRecycleView();
             }
 
+            @Override
+            public void onFetchAd(DetailedAd ad) {
+
+            }
+
         });
     }
 
