@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".adsLikedActivity">
+    tools:context=".adsLikedActivity"
+    android:background="@color/secondary_color">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_view"

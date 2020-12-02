@@ -7,10 +7,12 @@
     android:id="@+id/liked_ads_layout"
     android:padding = "15dp">
 
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/third_color">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="363dp"
@@ -37,6 +39,7 @@
                 android:gravity="end"
                 android:text="Price: "
                 android:textAlignment="viewEnd"
+                android:textColor="@color/grey"
                 app:layout_constraintStart_toEndOf="@+id/adPicture"
                 app:layout_constraintTop_toBottomOf="@+id/adTitle" />
 
