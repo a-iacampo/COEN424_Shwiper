@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onCardSwiped(Direction direction) {
                 Log.d(TAG, "onCardSwiped: p=" + manager.getTopPosition() + " d=" + direction);
                 if (direction == Direction.Right){
-                    firebaseHelper.storeLikedAd(listFetchedOfAds.get(manager.getTopPosition()));
+                    firebaseHelper.storeLikedAd(listFetchedOfAds.get(manager.getTopPosition()-1));
                 }
                 if (direction == Direction.Left){
                 }
@@ -204,14 +204,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId())
         {
             case R.id.item1:
-                Intent intent = new Intent(MainActivity.this, profileActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.item2:
                 Intent intent2 = new Intent(MainActivity.this, adsLikedActivity.class);
                 startActivity(intent2);
                 return true;
-            case R.id.item3:
+            case R.id.item2:
                 logout();
                 return true;
         }

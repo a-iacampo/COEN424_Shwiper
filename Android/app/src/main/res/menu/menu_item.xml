@@ -6,22 +6,15 @@
             >
 
         <item
-            android:title="Profile"
+            android:title="Ads Liked"
             android:id="@+id/item1"
             android:icon="@drawable/ic_item_foreground"
             android:textColor="@color/main_color"
             />
 
         <item
-            android:title="Ads Liked"
-            android:id="@+id/item2"
-            android:icon="@drawable/ic_item_foreground"
-            android:textColor="@color/main_color"
-            />
-
-        <item
             android:title="Logout"
-            android:id="@+id/item3"
+            android:id="@+id/item2"
             android:icon="@drawable/ic_item_foreground"
             />
     </group>
