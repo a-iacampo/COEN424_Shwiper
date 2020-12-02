@@ -78,6 +78,7 @@ public class OnCardClick extends AppCompatActivity {
         staticDescription = findViewById(R.id.static_description);
         progressBar = findViewById(R.id.ad_progressBar);
         progressBar.setVisibility(View.VISIBLE);
+        progressBar.bringToFront();
 
         Intent intent = getIntent();
         url = intent.getStringExtra("url");

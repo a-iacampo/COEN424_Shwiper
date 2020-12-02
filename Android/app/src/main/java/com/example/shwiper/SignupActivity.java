@@ -131,7 +131,7 @@ public class SignupActivity extends AppCompatActivity {
                     //Store User in the database
                     final String userID = fAuth.getCurrentUser().getUid();
                     DocumentReference docRef = fStore.collection("users").document(userID);
-                    docRef.set(new User(userID, name, email)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    docRef.set(new User(userID, name, email, 0)).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(TAG, "User " + userID + " successfully created!");

@@ -10,7 +10,6 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-
 //Initialize App
 const firebase = require('firebase/app');
 require('firebase/auth');
@@ -25,12 +24,16 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
     }
     
-    const locationIndex = 0;
+    const uid = context.auth.uid;
+
+    var locationIndex = await db.collection('users').doc(`${uid}`).get().then((data) => {
+        return data.locationPref;
+    });
+
     const distance = 1;
 
     const list = [];
-    const locations = [kijiji.locations, 
-        kijiji.locations.QUEBEC.GREATER_MONTREAL, 
+    const locations = [kijiji.locations.QUEBEC.GREATER_MONTREAL, 
         kijiji.locations.QUEBEC.GREATER_MONTREAL.CITY_OF_MONTREAL,
         kijiji.locations.QUEBEC.GREATER_MONTREAL.LAVAL_NORTH_SHORE,
         kijiji.locations.QUEBEC.GREATER_MONTREAL.LONGUEUIL_SOUTH_SHORE,
@@ -77,6 +80,23 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     }));
 
     return ads;
+});
+
+//Store location preference in a user
+exports.storeLocation = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        // Throwing an HttpsError so that the client gets the error details.
+        throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+    }
+
+    const uid = context.auth.uid;
+
+    await db.collection('users').doc(`${uid}`).update({locationPref: data.location})
+    .catch((error) => {
+        functions.logger.log(error);
+        return error;
+    });
+
 });
 
 //Store Liked Ads to user's LikedAds collection

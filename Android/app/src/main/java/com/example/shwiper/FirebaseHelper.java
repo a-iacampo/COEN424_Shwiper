@@ -79,6 +79,39 @@ public class FirebaseHelper {
         });
     }
 
+    private Task<String> onCallStoreLocationPref(int location) {
+        Log.d(TAG, "onCallStoreLikedAd");
+
+        //Create Map for likedAd JSON document
+        Map<String, Object> data = new HashMap<>();
+        data.put("locationPref", location);
+
+        return mFunctions.getHttpsCallable("storeLocation").call(data).continueWith(new Continuation<HttpsCallableResult, String>() {
+            @Override
+            public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                return ""; //returns nothing....
+            }
+        });
+    }
+
+    public void storeLocationPref(int location){
+
+        onCallStoreLocationPref(location).addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (!task.isSuccessful()) {
+                    Exception e = task.getException();
+                    if (e instanceof FirebaseFunctionsException) {
+                        FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                        FirebaseFunctionsException.Code code = ffe.getCode();
+                        Object details = ffe.getDetails();
+                    }
+                    Log.d(TAG, "ERROR: " + e);
+                }
+            }
+        });
+    }
+
     private Task<String> onCallStoreLikedAd(Ad likedAd) {
         Log.d(TAG, "onCallStoreLikedAd");
 

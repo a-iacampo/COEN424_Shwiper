@@ -4,13 +4,23 @@ public class User {
     private String id;
     private String name;
     private String email;
+    private int locationPref;
 
     public User() {}
 
-    public User(String id, String name, String email) {
+    public User(String id, String name, String email, int locationPref) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.locationPref = locationPref;
+    }
+
+    public int getLocationPref() {
+        return locationPref;
+    }
+
+    public void setLocationPref(int locationPref) {
+        this.locationPref = locationPref;
     }
 
     public String getId() {
