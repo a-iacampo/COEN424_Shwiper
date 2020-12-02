@@ -118,7 +118,11 @@ public class OnCardClick extends AppCompatActivity {
 
     private void loadUI(DetailedAd ad) {
         itemName.setText(ad.getTitle());
-        itemPrice.setText("Price: " + ad.getPrice() + "$");
+
+        if(ad.getPrice().equals("undefined"))
+            itemPrice.setText("Price: " + ad.getPrice() + "$");
+        else
+            itemPrice.setText("Price: -");
 
         if(ad.getSize().equals("undefined"))
             itemSize.setText("Size: -");

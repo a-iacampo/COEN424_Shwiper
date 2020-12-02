@@ -42,7 +42,7 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     };
 
     const params = {
-        locationId: locations[locationIndex],
+        locationId: kijiji.locations.QUEBEC.GREATER_MONTREAL,
         categoryId: kijiji.categories.BUY_AND_SELL.CLOTHING,
         sortType: "DATE_DESCENDING",
         distance: distance
