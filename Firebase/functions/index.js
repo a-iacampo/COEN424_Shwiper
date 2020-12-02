@@ -24,18 +24,9 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
         // Throwing an HttpsError so that the client gets the error details.
         throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
     }
+
+    const uid = context.auth.uid;
     
-    const locationIndex = 0;
-    const distance = 1;
-
-    const list = [];
-    const locations = [kijiji.locations, 
-        kijiji.locations.QUEBEC.GREATER_MONTREAL, 
-        kijiji.locations.QUEBEC.GREATER_MONTREAL.CITY_OF_MONTREAL,
-        kijiji.locations.QUEBEC.GREATER_MONTREAL.LAVAL_NORTH_SHORE,
-        kijiji.locations.QUEBEC.GREATER_MONTREAL.LONGUEUIL_SOUTH_SHORE,
-        kijiji.locations.QUEBEC.GREATER_MONTREAL.WEST_ISLAND];
-
     const options = {
         //Number of ads it fetches
         minResults: 40, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
@@ -44,38 +35,53 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     const params = {
         locationId: kijiji.locations.QUEBEC.GREATER_MONTREAL,
         categoryId: kijiji.categories.BUY_AND_SELL.CLOTHING,
-        sortType: "DATE_DESCENDING",
-        distance: distance
+        sortType: "DATE_DESCENDING"
     };
+    
+    const list = [];
 
-    let ads = await kijiji.search(params, options).then((ads) => {
-        ads.forEach((ad) => {
-            //Clean data before sending to client
-            var title = ad.title.replace(/['"]+/g, '');
-            title = title.replace(/(\r\n|\n|\r)/gm, "\\n");
-            var description = ad.description.replace(/['"]+/g, '');
-            description = description.replace(/(\r\n|\n|\r)/gm, "\\n");
-            var location = ad.attributes.location.replace(/(\r\n|\n|\r)/gm, "\\n");
+    try{
+        let ads = await kijiji.search(params, options);
+    
 
-            if(!(ad.image === "")) {
-                list.push(`{
-                    title: "${title}",
-                    description: "${description}",
-                    image: "${ad.image}",
-                    price: "${ad.attributes.price}",
-                    location: "${location}",
-                    url: "${ad.url}"
-                }`);
+        for(let ad of ads) {
+            let itemId = ad.url.split('/').pop();
+
+            
+            functions.logger.log(itemId);
+            // eslint-disable-next-line
+            let doc = await db.collection('users').doc(`${uid}`).collection('likedAds').doc(`${itemId}`).get();
+            
+            if(!doc.exists) {
+                //Clean data before sending to client
+                var title = ad.title.replace(/['"]+/g, '');
+                title = title.replace(/(\r\n|\n|\r)/gm, "\\n");
+                var description = ad.description.replace(/['"]+/g, '');
+                description = description.replace(/(\r\n|\n|\r)/gm, "\\n");
+                var location = ad.attributes.location.replace(/(\r\n|\n|\r)/gm, "\\n");
+
+                
+
+                if(!(ad.image === "")) {
+                    list.push(`{
+                        title: "${title}",
+                        description: "${description}",
+                        image: "${ad.image}",
+                        price: "${ad.attributes.price}",
+                        location: "${location}",
+                        url: "${ad.url}"
+                    }`);
+                }
             }
-        });
+        }
 
         const result = "[" + list + "]";
         return result;
 
-    }).catch((error => {
-        return error;
-    }));
-
+    }
+    catch(err) {
+        functions.logger.log(err);
+    }
     return ads;
 });
 
@@ -88,13 +94,12 @@ exports.storeLikedAd = functions.https.onCall(async (data, context) => {
     }
 
     const uid = context.auth.uid;
-
-    await db.collection('users').doc(`${uid}`).collection('likedAds').add(data)
+    let itemId = data.url.split('/').pop();
+    await db.collection('users').doc(`${uid}`).collection('likedAds').doc(`${itemId}`).set(data)
     .catch((error) => {
         functions.logger.log(error);
         return error;
     });
-
 });
 
 //fetch all liked ads from user's LikedAds collection
@@ -192,10 +197,10 @@ exports.logout = functions.https.onCall(async (data, context) => {
 
 //HTTPS onCall fetchFromScraper function
 exports.getAd = functions.https.onCall(async (data, context) => {
-    // if (!context.auth) {
-    //     // Throwing an HttpsError so that the client gets the error details.
-    //     throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
-    // }
+    if (!context.auth) {
+         // Throwing an HttpsError so that the client gets the error details.
+         throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+    }
     const adUrl = data.url;
 
     let ad = await kijiji.Ad.Get(adUrl).then((ad) => {
