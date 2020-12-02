@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/liked_ads_layout"
+    android:padding = "15dp">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/third_color">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="363dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/priceValue"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:text="TextView"
+                app:layout_constraintTop_toBottomOf="@+id/adTitle"
+                app:layout_constraintStart_toEndOf="@+id/itemPriceTextTitle"
+                tools:layout_editor_absoluteX="124dp" />
+
+            <TextView
+                android:id="@+id/itemPriceTextTitle"
+                android:layout_width="39dp"
+                android:layout_height="19dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="Price: "
+                android:textAlignment="viewEnd"
+                android:textColor="@color/grey"
+                app:layout_constraintStart_toEndOf="@+id/adPicture"
+                app:layout_constraintTop_toBottomOf="@+id/adTitle" />
+
+            <TextView
+                android:id="@+id/adTitle"
+                android:layout_width="85dp"
+                android:layout_height="27dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="6dp"
+                android:text="TextView"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/adPicture"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/adPicture"
+                android:layout_width="73dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/sample2" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
