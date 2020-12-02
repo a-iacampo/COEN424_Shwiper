@@ -3,22 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="300dp"
     android:orientation="vertical"
-    android:background="#FCC"
+    android:background="@color/third_color"
     android:paddingLeft="15dp"
     android:gravity="bottom"
 
     >
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
 
-        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Shwiper"
         android:textSize="50sp"
         android:layout_marginTop="10dp"
+        android:textColor="@color/white"
         />
 
 </LinearLayout>

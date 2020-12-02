@@ -8,6 +8,7 @@
     tools:context=".MainActivity"
     tools:openDrawer="start"
     android:id="@+id/drawer"
+    android:background="@color/secondary_color"
     >
 
 
@@ -31,7 +32,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#FF6200EE"
+            android:id="@+id/toolbar"
+            android:background="@color/main_color"
             android:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -43,6 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="@color/secondary_color"/>
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
