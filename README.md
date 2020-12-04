@@ -15,7 +15,7 @@ Shwiper is developed with the purpose of allowing individuals to browse for seco
 - Allow users to browse more second hand retailing services like eBay
 
 ## Contributors
-- [Anthony Iacampo (Concordia University)] (https://github.com/a-iacampo)
+- [Anthony Iacampo (Concordia University)] (https://github.com/a-iacampo) [Team Leader]
 - [Liam-Thomas Flynn (Concordia University)] (https://github.com/Eltom777)
 - [Teng Zhao (Concordia University)] (https://github.com/BladeGD)
 - [Jordan Hum (Concordia University)] (https://github.com/Jordan-Hum)
