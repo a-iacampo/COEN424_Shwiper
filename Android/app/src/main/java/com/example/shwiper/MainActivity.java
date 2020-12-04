@@ -43,9 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private CardView cardView;
     private ProgressBar progressBar;
 
-
     protected FirebaseHelper firebaseHelper;
-    //protected ArrayList<Ad> listFetchedOfAds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +69,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         progressBar = findViewById(R.id.progressBar);
 
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    private void initDrawerMenu(){
-
     }
 
     private void initFirebaseHelper(){

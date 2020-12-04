@@ -15,12 +15,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Code based on:
- * https://www.geeksforgeeks.org/how-to-create-a-nested-recyclerview-in-android/
- * https://www.youtube.com/watch?v=Vyqz_-sJGFk&t=1187s
- * Modified by Liam-Thomas Flynn on 21/09/2020
- */
 public class adsLikedListAdapter extends RecyclerView.Adapter<adsLikedListAdapter.MyViewHolder> {
 
     private static final String TAG = "ListCourseAdapter";

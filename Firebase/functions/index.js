@@ -10,7 +10,6 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-
 //Initialize App
 const firebase = require('firebase/app');
 require('firebase/auth');
@@ -28,8 +27,8 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     const uid = context.auth.uid;
     
     const options = {
-        //Number of ads it fetches
-        minResults: 40, //must be done in batches of 20 (ex: 20, 40, 60, ...) *Note keep scraping to a minimum to avoid detection and bans from Kijiji
+        //Number of ads to fetch
+        minResults: 40,
     };
 
     const params = {
@@ -43,7 +42,6 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
     try{
         let ads = await kijiji.search(params, options);
     
-
         for(let ad of ads) {
             let itemId = ad.url.split('/').pop();
 
@@ -61,7 +59,6 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
                 var location = ad.attributes.location.replace(/(\r\n|\n|\r)/gm, "\\n");
 
                 
-
                 if(!(ad.image === "")) {
                     list.push(`{
                         title: "${title}",
@@ -77,7 +74,6 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
 
         const result = "[" + list + "]";
         return result;
-
     }
     catch(err) {
         functions.logger.log(err);
@@ -87,7 +83,6 @@ exports.FetchFromScraper = functions.https.onCall(async (data, context) => {
 
 //Store Liked Ads to user's LikedAds collection
 exports.storeLikedAd = functions.https.onCall(async (data, context) => {
-
     if (!context.auth) {
         // Throwing an HttpsError so that the client gets the error details.
         throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
@@ -104,7 +99,6 @@ exports.storeLikedAd = functions.https.onCall(async (data, context) => {
 
 //fetch all liked ads from user's LikedAds collection
 exports.fetchLikedAds = functions.https.onCall(async (data, context) => {
-
     if (!context.auth) {
         // Throwing an HttpsError so that the client gets the error details.
         throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
@@ -113,7 +107,6 @@ exports.fetchLikedAds = functions.https.onCall(async (data, context) => {
     var likedAds = []
     const uid = context.auth.uid;
 
-    
     const snapshot = await db.collection('users').doc(`${uid}`).collection('likedAds').get().then( (snapshot) => {
         snapshot.forEach(doc => {
             let data = doc.data();
@@ -136,7 +129,6 @@ exports.fetchLikedAds = functions.https.onCall(async (data, context) => {
     }));
     
     return snapshot
-
 });
 
 //HTTPS onCall signup function
@@ -225,5 +217,3 @@ exports.getAd = functions.https.onCall(async (data, context) => {
 
     return ad;
 });
-
-//Run with Firebase serve

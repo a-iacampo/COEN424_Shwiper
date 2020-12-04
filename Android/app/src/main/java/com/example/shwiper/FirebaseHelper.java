@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class FirebaseHelper {
     protected static final String TAG = "FirebaseHelper";
     protected FirebaseFunctions mFunctions;
